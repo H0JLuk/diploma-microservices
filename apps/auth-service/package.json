@@ -1,0 +1,19 @@
+{
+  "name": "@app/auth-service",
+  "version": "v0.0.22",
+  "description": "monorepo auth-service",
+  "main": "main",
+  "scripts": {
+    "format": "../../tools/eslint/node_modules/.bin/prettier --write \"**/*.{ts, js, json}\"",
+    "lint": "yarn format && ../../tools/eslint/node_modules/.bin/eslint \"src/**/*.{ts, js, json}\" --fix"
+  },
+  "author": {
+    "name": "Mike Lima",
+    "email": "mike.rodrigues.lima@gmail.com"
+  },
+  "engines": {
+    "node": ">=16 <=18"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}

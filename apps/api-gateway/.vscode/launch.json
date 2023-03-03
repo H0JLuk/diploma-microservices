@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "App: @app/cats.api",
+      "type": "node",
+      "request": "launch",
+      "localRoot": "${workspaceFolder}/../../",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start:api-gateway:dev"],
+      "console": "integratedTerminal",
+      "smartStep": true,
+      "sourceMaps": true,
+      "remoteRoot": "${workspaceFolder}/src",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
