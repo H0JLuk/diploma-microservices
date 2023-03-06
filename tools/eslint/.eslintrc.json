@@ -39,7 +39,7 @@
         "ignoreUrls": true
       }
     ],
-    "no-console": ["error"],
+    "no-console": ["warn"],
     "complexity": ["error", 5],
     "spaced-comment": [2, "always"]
   }

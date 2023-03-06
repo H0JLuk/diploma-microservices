@@ -15,5 +15,14 @@
     "node": ">=16 <=18"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "@nestjs/config": "^2.3.1",
+    "@nestjs/jwt": "^10.0.2",
+    "bcrypt": "5.0.1"
+  },
+  "devDependencies": {
+    "@prisma/client": "^4.11.0",
+    "@types/bcrypt": "^5.0.0",
+    "prisma": "^4.11.0"
+  }
 }

@@ -5,7 +5,6 @@
   "root": "apps/api-gateway",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true,
     "tsConfigPath": "apps/api-gateway/tsconfig.json"
   },
   "projects": {
@@ -40,6 +39,15 @@
       "sourceRoot": "libs/shared/src",
       "compilerOptions": {
         "tsConfigPath": "libs/shared/tsconfig.json"
+      }
+    },
+    "@libs/utils": {
+      "type": "library",
+      "root": "libs/utils",
+      "entryFile": "index",
+      "sourceRoot": "libs/utils",
+      "compilerOptions": {
+        "tsConfigPath": "libs/utils/tsconfig.json"
       }
     }
   }

@@ -1,12 +1,25 @@
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ['localhost:29092'],
+      },
+      consumer: {
+        groupId: 'auth-consumer',
+      },
+    },
+  });
 
-  const PORT = process.env.PORT || 5001;
+  await app.listen();
 
-  await app.listen(PORT);
+  Logger.log(`🚀 Auth-microservice is running!`);
 }
+
 bootstrap();

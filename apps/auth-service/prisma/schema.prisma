@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model token {
+  id            Int    @id @default(autoincrement())
+  refresh_token String @unique
+  user_id       Int
+  user          user   @relation(fields: [user_id], references: [id])
+}
+
+model user {
+  id          Int            @id @default(autoincrement())
+  name        String?        @db.VarChar
+  login       String         @unique @db.VarChar
+  password    String
+  role        user_role_enum @default(Student)
+  isActivated Boolean        @default(false)
+  token       token[]
+}
+
+enum user_role_enum {
+  Student
+  Methodist
+  Admin
+}

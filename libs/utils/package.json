@@ -1,7 +1,7 @@
 {
-  "name": "@libs/shared",
+  "name": "@libs/utils",
   "version": "v0.0.22",
-  "description": "monorepo shared DTO's and types",
+  "description": "monorepo utils library",
   "author": {
     "name": "Mike Lima",
     "email": "mike.rodrigues.lima@gmail.com"
@@ -13,9 +13,6 @@
   "engines": {
     "node": ">=14 <=18"
   },
-  "dependencies": {
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.0"
-  },
+  "dependencies": {},
   "license": "MIT"
 }
