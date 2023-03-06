@@ -1,6 +1,7 @@
-import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, Inject, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ClientKafka } from '@nestjs/microservices';
+import { ErrorMessages } from 'libs/utils/documentation/constants';
 import { firstValueFrom } from 'rxjs';
 
 import { AUTH_KEY } from '../decorators/auth.decorator';
@@ -23,14 +24,14 @@ export class AuthGuard implements CanActivate {
     const isNeedAuth = this.reflector.get<boolean>(AUTH_KEY, context.getHandler());
 
     if (!isNeedAuth) return true;
-    if (!authToken) return false;
+    if (!authToken) throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
 
     try {
       const { user } = await firstValueFrom(this.authClient.send('verify-jwt', { jwt: authToken }));
       req.user = user;
       return true;
     } catch {
-      return false;
+      throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
     }
   }
 }

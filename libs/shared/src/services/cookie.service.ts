@@ -15,6 +15,11 @@ export class CookieService {
     const isProd = process.env.NODE_ENV === 'production';
     // TODO: здесь не видит .env пачмута((
 
+    if (!process.env.NODE_ENV) {
+      console.log('HERE!!!', process.env);
+      throw new Error('ебобаный .env не видит(((');
+    }
+
     return {
       httpOnly: isProd,
       secure: isProd,
