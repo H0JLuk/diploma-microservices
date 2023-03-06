@@ -25,13 +25,18 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @MessagePattern('refresh')
+  refresh(@Payload() { userId, refreshToken }: { userId: User['id']; refreshToken: string }) {
+    return this.authService.refresh(userId, refreshToken);
+  }
+
+  @MessagePattern('sign-out')
+  signOut(@Payload('refreshToken') refreshToken: string) {
+    return this.authService.signOut(refreshToken);
+  }
+
   @MessagePattern('verify-jwt')
   verifyJwt(@Payload('jwt') jwt: string) {
     return this.authService.verifyJwt(jwt);
-  }
-
-  @MessagePattern('decode-jwt')
-  decodeJwt(@Payload('jwt') jwt: string) {
-    return this.authService.getUserFromHeader(jwt);
   }
 }

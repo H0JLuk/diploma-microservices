@@ -1,15 +1,14 @@
 import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { ClientKafka } from '@nestjs/microservices';
-import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
-import { AUTH_KEY } from '../decorators/auth.decorator';
-import { JwtUser } from '../entities';
 
-type LargeRequest = Request & JwtUser;
+import { AUTH_KEY } from '../decorators/auth.decorator';
+import { AppRequest } from '../types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(@Inject('AUTH_SERVICE') private authClient: ClientKafka) {}
+  constructor(@Inject('AUTH_SERVICE') private authClient: ClientKafka, private reflector: Reflector) {}
 
   async onModuleInit(): Promise<void> {
     this.authClient.subscribeToResponseOf('verify-jwt');
@@ -18,10 +17,12 @@ export class AuthGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest() as LargeRequest;
+    const req: AppRequest = context.switchToHttp().getRequest();
     const authToken = req.headers.authorization?.replace('Bearer ', '');
 
-    if (!AUTH_KEY) return true;
+    const isNeedAuth = this.reflector.get<boolean>(AUTH_KEY, context.getHandler());
+
+    if (!isNeedAuth) return true;
     if (!authToken) return false;
 
     try {
