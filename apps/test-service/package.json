@@ -1,7 +1,7 @@
 {
-  "name": "@app/auth-service",
+  "name": "@app/test-service",
   "version": "v0.0.22",
-  "description": "monorepo auth-service",
+  "description": "monorepo test-service",
   "main": "main",
   "scripts": {
     "format": "../../tools/eslint/node_modules/.bin/prettier --write \"**/*.{ts, js, json}\"",
@@ -11,14 +11,9 @@
     "node": ">=16 <=18"
   },
   "license": "MIT",
-  "dependencies": {
-    "@nestjs/config": "^2.3.1",
-    "@nestjs/jwt": "^10.0.2",
-    "bcrypt": "5.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@prisma/client": "^4.11.0",
-    "@types/bcrypt": "^5.0.0",
     "prisma": "^4.11.0"
   }
 }

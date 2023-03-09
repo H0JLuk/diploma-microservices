@@ -67,7 +67,12 @@
   "version" "v0.0.22"
   dependencies:
     "@nestjs/config" "^2.3.1"
+    "@nestjs/jwt" "^10.0.2"
     "bcrypt" "5.0.1"
+
+"@app/test-service@file:/home/swinka-bebra/pet-projects/npi/diplom/my-project/apps/test-service":
+  "resolved" "file:apps/test-service"
+  "version" "v0.0.22"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.16.7":
   "integrity" "sha512-TDCmlK5eOvH+eH7cdAFlNXeVJqWIQ7gW9tY1GJIpUtFb6CmjVyq2VM3u71bOyR8CRihcCgMUYoDNyLXao3+70Q=="

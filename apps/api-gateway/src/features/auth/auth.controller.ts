@@ -55,12 +55,14 @@ export class AuthController {
     return res.json({ accessToken, user });
   }
 
+  @ApiBearerAuth()
+  @Authorized()
   @Post('sign-out')
-  async signOut(@CurrentUser('id') userId: TCurrentUser['id'], @Req() req: Request, @Res() res: Response) {
+  async signOut(@Req() req: Request, @Res() res: Response) {
     const refreshToken = this.cookieService.getRefreshToken(req);
     await firstValueFrom(this.authClient.send('sign-out', { refreshToken }));
     this.cookieService.clearAllTokens(res);
-    res.sendStatus(200);
+    return res.sendStatus(200);
   }
 
   @ApiBearerAuth()

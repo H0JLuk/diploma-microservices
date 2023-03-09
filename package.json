@@ -18,11 +18,13 @@
   "scripts": {
     "format": "prettier --write \"apps/**/*.{ts, js, json}\" \"libs/**/*.{ts, js, json}\" ",
     "lint": "yarn format && eslint \"apps/**/*.{ts, js, json}\" \"libs/**/*.{ts, js, json}\" --fix",
-    "monorepo:install": "yarn && yarn workspace @tools/eslint.config install && yarn workspace @app/api-gateway install && yarn workspace @app/auth-service install && yarn workspace @libs/shared install",
+    "monorepo:install": "yarn && yarn workspace @tools/eslint.config install && yarn workspace @app/api-gateway install && yarn workspace @app/auth-service install && yarn workspace @app/test-service install && yarn workspace @libs/shared install",
     "start:api-gateway:dev": "nest start @app/api-gateway --debug --watch",
     "start:auth-service:dev": "nest start @app/auth-service --debug --watch",
+    "start:test-service:dev": "nest start @app/test-service --debug --watch",
     "start:api-gateway:prod": "node dist/apps/api-gateway/main.js",
-    "start:auth-service:prod": "node dist/apps/auth-service/main.js"
+    "start:auth-service:prod": "node dist/apps/auth-service/main.js",
+    "start:test-service:prod": "node dist/apps/test-service/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

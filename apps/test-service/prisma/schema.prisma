@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model test {
+  id              Int         @id @default(autoincrement())
+  name            String      @unique()
+  startTime       DateTime    @map("start_time")
+  endTime         DateTime    @map("end_time")
+  duration        Int?
+  isRandomAnswers Boolean     @default(false) @map("is_random_answers")
+  creatorId       Int         @map("creator_id")
+  subjectId       Int         @map("subject_id")
+  subject         testSubject @relation(fields: [subjectId], references: [id])
+  questions       question[]
+}
+
+model testSubject {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  tests test[]
+}
+
+model question {
+  id         Int                @id() @default(autoincrement())
+  text       String             @db.Text
+  image      String?            @db.Text
+  type       QuestionType
+  textAnswer String?            @map("test_answer") @db.VarChar
+  categoryId Int?
+  testId     Int                @map("test_id")
+  answers    answerToQuestion[]
+  test       test               @relation(fields: [testId], references: [id])
+
+  @@unique([text, image, testId])
+}
+
+model answerToQuestion {
+  id                Int                 @id() @default(autoincrement())
+  text              String?             @db.Text
+  image             String?             @db.Text
+  isRight           Boolean             @default(false) @map("is_right")
+  questionId        Int                 @map("question_id")
+  question          question            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  testHistoryAnswer testHistoryAnswer[]
+
+  @@map("answer_to_question")
+}
+
+model testHistory {
+  id         Int                 @id() @default(autoincrement())
+  startTime  DateTime            @default(now()) @map("start_time")
+  studentId  Int                 @map("student_id")
+  finishedAt DateTime?           @map("finished_at")
+  answers    testHistoryAnswer[]
+
+  @@map("test_history")
+}
+
+model testHistoryAnswer {
+  testHistoryId    Int
+  questionAnswerId Int
+  history          testHistory       @relation(fields: [testHistoryId], references: [id])
+  answer           answerToQuestion? @relation(fields: [questionAnswerId], references: [id])
+
+  @@unique([testHistoryId, questionAnswerId])
+  @@map("test_history_answer")
+}
+
+// ENUMS
+
+enum QuestionType {
+  single
+  multiple
+  input
+
+  @@map("enum_question_type")
+}

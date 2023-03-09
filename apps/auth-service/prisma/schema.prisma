@@ -21,6 +21,7 @@ model user {
   password    String
   role        user_role_enum @default(Student)
   isActivated Boolean        @default(false)
+  deleted     Boolean        @default(false)
   token       token[]
 }
 

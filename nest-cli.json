@@ -26,6 +26,15 @@
         "tsConfigPath": "apps/auth-service/tsconfig.json"
       }
     },
+    "@app/test-service": {
+      "type": "application",
+      "root": "apps/test-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/test-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/test-service/tsconfig.json"
+      }
+    },
     "@tools/eslint.config": {
       "type": "library",
       "root": "tools/eslint",

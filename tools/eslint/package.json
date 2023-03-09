@@ -3,10 +3,6 @@
   "version": "v0.0.22",
   "description": "monorepo eslint config",
   "main": ".eslintrc.json",
-  "author": {
-    "name": "Mike Lima",
-    "email": "mike.rodrigues.lima@gmail.com"
-  },
   "engines": {
     "node": ">=14 <=18"
   },

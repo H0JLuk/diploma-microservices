@@ -1,6 +1,5 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { Prisma } from '@prisma/client';
 import { LoginUserDto, RegistrationUserDto } from 'libs/shared/src/dto';
 import { User } from 'libs/shared/src/entities';
 
@@ -11,7 +10,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern('get-all-users')
-  getAllUsers(): Prisma.PrismaPromise<User[]> {
+  getAllUsers(): Promise<User[]> {
     return this.authService.getAllUsers();
   }
 

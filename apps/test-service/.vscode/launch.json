@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "App: @app/auth-service",
+      "name": "App: @app/test-service",
       "type": "node",
       "request": "launch",
       "localRoot": "${workspaceFolder}/../../",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": ["start:auth-service:dev"],
+      "runtimeArgs": ["start:test-service:dev"],
       "console": "integratedTerminal",
       "smartStep": true,
       "sourceMaps": true,

@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "App: @app/cats.api",
+      "name": "App: @app/api-gateway",
       "type": "node",
       "request": "launch",
       "localRoot": "${workspaceFolder}/../../",

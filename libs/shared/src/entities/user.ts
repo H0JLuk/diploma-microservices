@@ -15,6 +15,9 @@ export class User {
 
   @ApiProperty()
   role: UserRoles;
+
+  @ApiProperty()
+  deleted?: boolean;
 }
 
 export type JwtUser = {

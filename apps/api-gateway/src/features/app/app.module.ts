@@ -24,6 +24,19 @@ import { AppController } from './app.controller';
           },
         },
       },
+      {
+        name: 'TEST_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'test',
+            brokers: ['localhost:29092'],
+          },
+          consumer: {
+            groupId: 'test-consumer',
+          },
+        },
+      },
     ]),
   ],
   controllers: [AppController, AuthController],
