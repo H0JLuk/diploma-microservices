@@ -25,6 +25,9 @@ $ yarn start:api-gateway:dev
 
 # auth-service dev mode
 $ yarn start:auth-service:dev
+
+# test-service dev mode
+$ yarn start:test-service:dev
 ```
 
 ## License
