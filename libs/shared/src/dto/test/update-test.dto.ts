@@ -1,16 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  IsDateString,
-  IsOptional,
-  IsNumber,
-  IsBoolean,
-  IsNotEmptyObject,
-  IsArray,
-} from 'class-validator';
-
-import { CreateQuestionDto } from '../question';
+import { IsString, IsDateString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
 
 export class UpdateTestDto {
   @ApiProperty()
@@ -37,9 +26,4 @@ export class UpdateTestDto {
   @IsOptional()
   @IsBoolean()
   isRandomAnswer?: boolean;
-
-  // @ApiProperty({ isArray: true, type: CreateQuestionDto, required: true })
-  // @IsNotEmptyObject()
-  // @IsArray()
-  // questions: CreateQuestionDto[];
 }

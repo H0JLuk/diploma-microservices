@@ -5,7 +5,9 @@ import { AuthGuard, RolesGuard } from 'libs/shared/src/guards';
 import { ErrorsInterceptor, TimeoutInterceptor } from 'libs/shared/src/interceptors';
 import { CookieService } from 'libs/shared/src/services/cookie.service';
 
+import { AnswerController } from '../answer/answer.controller';
 import { AuthController } from '../auth/auth.controller';
+import { QuestionController } from '../question/question.controller';
 import { TestController } from '../test/test.controller';
 import { AppController } from './app.controller';
 
@@ -40,7 +42,7 @@ import { AppController } from './app.controller';
       },
     ]),
   ],
-  controllers: [AppController, AuthController, TestController],
+  controllers: [AppController, AuthController, TestController, QuestionController, AnswerController],
   providers: [
     CookieService,
     { provide: APP_GUARD, useClass: AuthGuard },

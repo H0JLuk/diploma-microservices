@@ -24,6 +24,11 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   categoryId: number;
 
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  testId: number;
+
   @ApiProperty({ isArray: true, type: CreateAnswerDto })
   @IsNotEmptyObject()
   @IsArray()

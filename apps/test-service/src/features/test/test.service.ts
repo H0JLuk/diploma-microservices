@@ -81,23 +81,6 @@ export class TestService {
         startTime: dto.startTime,
         endTime: dto.endTime,
         isRandomAnswers: dto.isRandomAnswer,
-        questions: {
-          set: [{ id: 1 }, { id: 6 }],
-          connectOrCreate: [
-            {
-              where: { id: 1 },
-              create: { categoryId: 1, text: 'id = 1', type: 'single' },
-            },
-            {
-              where: { id: 6 },
-              create: { categoryId: 1, text: 'id = 6', type: 'single' },
-            },
-            {
-              where: { id: 0 },
-              create: { categoryId: 1, text: 'NEW QUESTION', type: 'single' },
-            },
-          ],
-        },
       },
     });
   }
