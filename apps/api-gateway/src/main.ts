@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DEFAULT_TAG, SWAGGER_API_ROOT } from 'libs/utils/documentation/constants';
@@ -9,6 +9,7 @@ const globalPrefix = 'api';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(globalPrefix);
 
   const config = new DocumentBuilder()
@@ -19,7 +20,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(SWAGGER_API_ROOT, app, document);
+  SwaggerModule.setup(SWAGGER_API_ROOT, app, document, { swaggerOptions: { persistAuthorization: true } });
 
   const PORT = process.env.PORT || 5001;
   await app.listen(PORT);

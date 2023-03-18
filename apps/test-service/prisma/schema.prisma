@@ -9,21 +9,34 @@ datasource db {
 
 model test {
   id              Int         @id @default(autoincrement())
-  name            String      @unique()
+  name            String
   startTime       DateTime    @map("start_time")
   endTime         DateTime    @map("end_time")
   duration        Int?
   isRandomAnswers Boolean     @default(false) @map("is_random_answers")
+  hidden          Boolean     @default(false)
   creatorId       Int         @map("creator_id")
   subjectId       Int         @map("subject_id")
-  subject         testSubject @relation(fields: [subjectId], references: [id])
+  subject         testSubject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
   questions       question[]
+
+  @@unique([name, subjectId])
 }
 
 model testSubject {
   id    Int    @id @default(autoincrement())
   name  String @unique
   tests test[]
+
+  @@map("subject")
+}
+
+model questionCategory {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  question question[]
+
+  @@map("question_category")
 }
 
 model question {
@@ -31,11 +44,11 @@ model question {
   text       String             @db.Text
   image      String?            @db.Text
   type       QuestionType
-  textAnswer String?            @map("test_answer") @db.VarChar
-  categoryId Int?
-  testId     Int                @map("test_id")
+  category   questionCategory   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   answers    answerToQuestion[]
-  test       test               @relation(fields: [testId], references: [id])
+  test       test               @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId     Int                @map("test_id")
+  categoryId Int                @map("category_id")
 
   @@unique([text, image, testId])
 }
@@ -65,8 +78,8 @@ model testHistory {
 model testHistoryAnswer {
   testHistoryId    Int
   questionAnswerId Int
-  history          testHistory       @relation(fields: [testHistoryId], references: [id])
-  answer           answerToQuestion? @relation(fields: [questionAnswerId], references: [id])
+  history          testHistory       @relation(fields: [testHistoryId], references: [id], onDelete: Cascade)
+  answer           answerToQuestion? @relation(fields: [questionAnswerId], references: [id], onDelete: Restrict)
 
   @@unique([testHistoryId, questionAnswerId])
   @@map("test_history_answer")

@@ -33,3 +33,8 @@ export type JwtInfo = JwtUser & {
 };
 
 export type UserRoles = 'Student' | 'Methodist' | 'Admin';
+export enum UserRoleEnum {
+  Student,
+  Methodist,
+  Admin,
+}

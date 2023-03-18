@@ -6,6 +6,7 @@ import { ErrorsInterceptor, TimeoutInterceptor } from 'libs/shared/src/intercept
 import { CookieService } from 'libs/shared/src/services/cookie.service';
 
 import { AuthController } from '../auth/auth.controller';
+import { TestController } from '../test/test.controller';
 import { AppController } from './app.controller';
 
 @Module({
@@ -39,7 +40,7 @@ import { AppController } from './app.controller';
       },
     ]),
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, TestController],
   providers: [
     CookieService,
     { provide: APP_GUARD, useClass: AuthGuard },

@@ -9,7 +9,7 @@ import { CookieService } from 'libs/shared/src/services/cookie.service';
 import { firstValueFrom, Observable } from 'rxjs';
 
 @ApiTags('auth')
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(@Inject('AUTH_SERVICE') private authClient: ClientKafka, private readonly cookieService: CookieService) {}
 
