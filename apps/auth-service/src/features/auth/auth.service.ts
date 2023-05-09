@@ -23,6 +23,25 @@ export class AuthService {
     return this.prismaService.user.findMany({ select: userSelectFromDB });
   }
 
+  public async checkAuth(tokens: { accessToken: string; refreshToken: string }) {
+    const [accessTokenInfo, refreshTokenInfo] = await Promise.all([
+      this.verifyJwt(tokens.accessToken),
+      this.verifyJwt(tokens.refreshToken),
+    ]);
+
+    if (
+      accessTokenInfo?.user.id !== refreshTokenInfo?.user.id ||
+      accessTokenInfo.user.role !== refreshTokenInfo.user.role
+    ) {
+      throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
+    }
+
+    return this.prismaService.user.findUniqueOrThrow({
+      select: userSelectFromDB,
+      where: { id: accessTokenInfo.user.id },
+    });
+  }
+
   public async registration({ login, name, password }: RegistrationUserDto) {
     const candidateUser = await this.prismaService.user.findUnique({ where: { login } });
 
@@ -67,7 +86,7 @@ export class AuthService {
     return { user, accessToken, refreshToken };
   }
 
-  public async refresh(userId: User['id'], oldRefreshToken: string) {
+  public async refresh(oldRefreshToken: string) {
     if (!oldRefreshToken) {
       throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
     }
@@ -79,15 +98,12 @@ export class AuthService {
       throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
     }
 
+    await this.prismaService.token.delete({ where: { refresh_token: oldRefreshToken } });
     const { accessToken, refreshToken } = await this.generateAndStoreTokens(userData.user);
-    await this.prismaService.token.update({
-      where: { refresh_token: oldRefreshToken },
-      data: { refresh_token: refreshToken },
-    });
 
-    const userFullInfo = await this.prismaService.user.findUnique({ where: { id: userId } });
+    const userFullInfo = await this.prismaService.user.findUnique({ where: { id: userData.user.id } });
 
-    return { accessToken, user: userFullInfo };
+    return { accessToken, refreshToken, user: userFullInfo };
   }
 
   public async signOut(refreshToken: string) {
@@ -115,8 +131,8 @@ export class AuthService {
   private async generateAndStoreTokens(user: User | JwtUser['user']) {
     const jwtPayload: JwtUser = { user: { id: user.id, role: user.role } };
 
-    const accessToken = await this.jwtService.signAsync(jwtPayload);
-    const refreshToken = await this.jwtService.signAsync(jwtPayload);
+    const accessToken = await this.jwtService.signAsync(jwtPayload, { expiresIn: '15m' }); // FIXME: перенести в одно место expiresIn
+    const refreshToken = await this.jwtService.signAsync(jwtPayload, { expiresIn: '30d' });
 
     await this.prismaService.token.create({ data: { user_id: user.id, refresh_token: refreshToken } });
     return { accessToken, refreshToken };

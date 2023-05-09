@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserId } from '../types';
 
 export class User {
   @ApiProperty()
@@ -22,7 +23,7 @@ export class User {
 
 export type JwtUser = {
   user: {
-    id: User['id'];
+    id: UserId;
     role: User['role'];
   };
 };

@@ -1,9 +1,10 @@
 import { Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { ClientKafka, Payload } from '@nestjs/microservices';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Authorized, CurrentUser, Roles, TCurrentUser } from 'libs/shared/src/decorators';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Authorized, CurrentUser, Roles } from 'libs/shared/src/decorators';
 import { CreateTestDto, UpdateTestDto } from 'libs/shared/src/dto';
 import { Test } from 'libs/shared/src/entities';
+import { UserId } from 'libs/shared/src/types';
 import { Observable } from 'rxjs';
 
 @ApiTags('tests')
@@ -23,21 +24,24 @@ export class TestController {
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({ type: Test, isArray: true })
   @Authorized()
   @Get()
-  getAllTests() {
+  getAllTests(): Observable<Test[]> {
     return this.testClient.send('get-all-tests', '');
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({ type: Test })
   @Authorized()
   @Roles('Methodist', 'Admin')
   @Get(':id')
-  getTest(@Param('id', ParseIntPipe) testId: number) {
+  getTest(@Param('id', ParseIntPipe) testId: number): Observable<Test> {
     return this.testClient.send('get-test', { testId });
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({ type: Test })
   @Authorized()
   @Get('subject/:subjectId')
   getAllTestsBySubject(@Param('subjectId', ParseIntPipe) subjectId: number): Observable<Test> {
@@ -45,14 +49,16 @@ export class TestController {
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({ type: Test })
   @Authorized()
   @Roles('Methodist', 'Admin')
   @Post()
-  createTest(@Payload() createTestDto: CreateTestDto, @CurrentUser('id') userId: TCurrentUser['id']): Observable<Test> {
+  createTest(@Payload() createTestDto: CreateTestDto, @CurrentUser('id') userId: UserId): Observable<Test> {
     return this.testClient.send('create-test', { test: createTestDto, userId });
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({ type: Test })
   @Authorized()
   @Roles('Methodist', 'Admin')
   @Put(':id')

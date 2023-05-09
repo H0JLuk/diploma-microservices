@@ -9,11 +9,11 @@ export class LoginUserDto {
 
   @ApiProperty()
   @IsStrongPassword({
-    minLength: 6,
+    minLength: 4,
     minLowercase: 1,
     minNumbers: 0,
     minSymbols: 0,
-    minUppercase: 1,
+    minUppercase: 0,
   })
   @IsNotEmpty()
   password: string;

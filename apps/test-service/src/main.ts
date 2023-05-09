@@ -1,8 +1,9 @@
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpStatus, Logger } from '@nestjs/common';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
+import { PrismaClientExceptionFilter } from './exceptions/prisma.exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
@@ -16,6 +17,14 @@ async function bootstrap() {
       },
     },
   });
+
+  const { httpAdapter } = app.get(HttpAdapterHost);
+
+  app.useGlobalFilters(
+    new PrismaClientExceptionFilter(httpAdapter, {
+      P2022: HttpStatus.BAD_REQUEST,
+    }),
+  );
 
   await app.listen();
 

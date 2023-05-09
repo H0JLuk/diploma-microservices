@@ -5,13 +5,18 @@ import { User } from 'libs/shared/src/entities';
 
 import { AuthService } from './auth.service';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern('get-all-users')
   getAllUsers(): Promise<User[]> {
     return this.authService.getAllUsers();
+  }
+
+  @MessagePattern('check-current-user')
+  async checkAuth(@Payload() tokens: { accessToken: string; refreshToken: string }) {
+    return this.authService.checkAuth(tokens);
   }
 
   @MessagePattern('registration')
@@ -25,8 +30,8 @@ export class AuthController {
   }
 
   @MessagePattern('refresh')
-  refresh(@Payload() { userId, refreshToken }: { userId: User['id']; refreshToken: string }) {
-    return this.authService.refresh(userId, refreshToken);
+  refresh(@Payload() { refreshToken }: { refreshToken: string }) {
+    return this.authService.refresh(refreshToken);
   }
 
   @MessagePattern('sign-out')

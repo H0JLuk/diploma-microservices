@@ -8,7 +8,9 @@ import { CookieService } from 'libs/shared/src/services/cookie.service';
 import { AnswerController } from '../answer/answer.controller';
 import { AuthController } from '../auth/auth.controller';
 import { QuestionController } from '../question/question.controller';
+import { SubjectController } from '../subject/subject.controller';
 import { TestController } from '../test/test.controller';
+import { TestHistoryController } from '../test-history/test-history.controller';
 import { AppController } from './app.controller';
 
 @Module({
@@ -42,7 +44,15 @@ import { AppController } from './app.controller';
       },
     ]),
   ],
-  controllers: [AppController, AuthController, TestController, QuestionController, AnswerController],
+  controllers: [
+    AppController,
+    AuthController,
+    TestController,
+    QuestionController,
+    AnswerController,
+    TestHistoryController,
+    SubjectController,
+  ],
   providers: [
     CookieService,
     { provide: APP_GUARD, useClass: AuthGuard },

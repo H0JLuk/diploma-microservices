@@ -8,7 +8,7 @@ export class TestService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public getTest(testId: number) {
-    return this.prismaService.test.findUnique({
+    return this.prismaService.test.findUniqueOrThrow({
       where: { id: testId },
       select: {
         id: true,

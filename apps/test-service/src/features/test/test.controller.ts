@@ -5,7 +5,7 @@ import { Test } from 'libs/shared/src/entities';
 
 import { TestService } from './test.service';
 
-@Controller('test')
+@Controller()
 export class TestController {
   constructor(private readonly testService: TestService) {}
 
@@ -26,7 +26,12 @@ export class TestController {
 
   @MessagePattern('create-test')
   createTest(@Payload('test') createTestDto: CreateTestDto, @Payload('userId') userId: number) {
-    return this.testService.createTest(createTestDto, userId);
+    try {
+      return this.testService.createTest(createTestDto, userId);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   @MessagePattern('update-test')

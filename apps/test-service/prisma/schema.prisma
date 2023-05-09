@@ -8,17 +8,18 @@ datasource db {
 }
 
 model test {
-  id              Int         @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   name            String
-  startTime       DateTime    @map("start_time")
-  endTime         DateTime    @map("end_time")
+  startTime       DateTime      @map("start_time")
+  endTime         DateTime      @map("end_time")
   duration        Int?
-  isRandomAnswers Boolean     @default(false) @map("is_random_answers")
-  hidden          Boolean     @default(false)
-  creatorId       Int         @map("creator_id")
-  subjectId       Int         @map("subject_id")
-  subject         testSubject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  isRandomAnswers Boolean       @default(false) @map("is_random_answers")
+  hidden          Boolean       @default(false)
+  creatorId       Int           @map("creator_id")
+  subjectId       Int           @map("subject_id")
+  subject         testSubject   @relation(fields: [subjectId], references: [id], onDelete: Restrict)
   questions       question[]
+  testHistory     testHistory[]
 
   @@unique([name, subjectId])
 }
@@ -66,11 +67,13 @@ model answerToQuestion {
 }
 
 model testHistory {
-  id         Int                 @id() @default(autoincrement())
-  startTime  DateTime            @default(now()) @map("start_time")
-  studentId  Int                 @map("student_id")
-  finishedAt DateTime?           @map("finished_at")
-  answers    testHistoryAnswer[]
+  id                 Int                 @id() @default(autoincrement())
+  startedAt          DateTime            @default(now()) @map("started_at")
+  studentId          Int                 @map("student_id")
+  finishedAt         DateTime?           @map("finished_at")
+  testId             Int                 @map("test_id")
+  testHistoryAnswers testHistoryAnswer[]
+  test               test                @relation(fields: [testId], references: [id])
 
   @@map("test_history")
 }
