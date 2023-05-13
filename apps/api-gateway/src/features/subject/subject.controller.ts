@@ -13,6 +13,7 @@ export class SubjectController {
 
   async onModuleInit(): Promise<void> {
     this.testClient.subscribeToResponseOf('get-all-subjects');
+    this.testClient.subscribeToResponseOf('get-subject');
     this.testClient.subscribeToResponseOf('create-subject');
     this.testClient.subscribeToResponseOf('update-subject');
     this.testClient.subscribeToResponseOf('delete-subject');
@@ -21,10 +22,15 @@ export class SubjectController {
   }
 
   @ApiBearerAuth()
-  @Authorized()
   @Get()
   getSubjects(): Observable<Subject[]> {
     return this.testClient.send('get-all-subjects', '');
+  }
+
+  @ApiBearerAuth()
+  @Get(':id')
+  getSubject(@Param('id', ParseIntPipe) subjectId: number): Observable<Subject> {
+    return this.testClient.send('get-subject', { subjectId });
   }
 
   @ApiBearerAuth()

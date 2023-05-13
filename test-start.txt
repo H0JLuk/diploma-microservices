@@ -1,0 +1,1 @@
+cd apps/test-service/ && npx prisma generate && cd ../.. && yarn start:test-service:dev

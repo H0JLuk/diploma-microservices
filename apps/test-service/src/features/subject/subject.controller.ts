@@ -14,6 +14,11 @@ export class SubjectController {
     return this.subjectService.getSubjects();
   }
 
+  @MessagePattern('get-subject')
+  getSubject(@Payload('subjectId') subjectId: number): Promise<Subject> {
+    return this.subjectService.getSubject(subjectId);
+  }
+
   @MessagePattern('create-subject')
   createSubject(@Payload('subjectDto') subjectDto: CreateSubjectDto): Promise<Subject> {
     return this.subjectService.createSubject(subjectDto);

@@ -1,8 +1,9 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { LoginUserDto, RegistrationUserDto } from 'libs/shared/src/dto';
+import { ChangeInfoUserDto, LoginUserDto, RegistrationUserDto } from 'libs/shared/src/dto';
 import { JwtInfo, JwtUser, User } from 'libs/shared/src/entities';
+import { UserId } from 'libs/shared/src/types';
 import { ErrorMessages } from 'libs/utils/documentation/constants';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -19,10 +20,6 @@ const userSelectFromDB = {
 export class AuthService {
   constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService) {}
 
-  getAllUsers() {
-    return this.prismaService.user.findMany({ select: userSelectFromDB });
-  }
-
   public async checkAuth(tokens: { accessToken: string; refreshToken: string }) {
     const [accessTokenInfo, refreshTokenInfo] = await Promise.all([
       this.verifyJwt(tokens.accessToken),
@@ -36,9 +33,9 @@ export class AuthService {
       throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
     }
 
-    return this.prismaService.user.findUniqueOrThrow({
+    return this.prismaService.user.findFirstOrThrow({
       select: userSelectFromDB,
-      where: { id: accessTokenInfo.user.id },
+      where: { id: accessTokenInfo.user.id, deleted: false },
     });
   }
 
@@ -65,8 +62,8 @@ export class AuthService {
   }
 
   public async login({ login, password }: LoginUserDto) {
-    const foundUser = await this.prismaService.user.findUnique({
-      where: { login },
+    const foundUser = await this.prismaService.user.findFirst({
+      where: { login, deleted: false },
       select: { ...userSelectFromDB, password: true },
     });
 
@@ -76,9 +73,9 @@ export class AuthService {
 
     const { password: hashPassword, ...user } = foundUser;
 
-    const isEquals = await bcrypt.compare(password, hashPassword);
+    const isEqual = await this.comparePassword(password, hashPassword);
 
-    if (!isEquals) {
+    if (!isEqual) {
       throw new BadRequestException('Неправильный пароль');
     }
 
@@ -92,23 +89,51 @@ export class AuthService {
     }
 
     const userData = await this.decodeToken(oldRefreshToken);
-    const tokenFromDB = await this.prismaService.token.findUnique({ where: { refresh_token: oldRefreshToken } });
+    const tokenFromDB = await this.prismaService.token.findUnique({
+      where: { refresh_token: oldRefreshToken },
+      include: { user: true },
+    });
 
     if (!userData || !tokenFromDB) {
       throw new UnauthorizedException(ErrorMessages.UNAUTHORIZED);
     }
 
     await this.prismaService.token.delete({ where: { refresh_token: oldRefreshToken } });
-    const { accessToken, refreshToken } = await this.generateAndStoreTokens(userData.user);
+    const { accessToken, refreshToken } = await this.generateAndStoreTokens({
+      id: tokenFromDB.user.id,
+      role: tokenFromDB.user.role,
+    });
 
-    const userFullInfo = await this.prismaService.user.findUnique({ where: { id: userData.user.id } });
+    const userFullInfo = await this.prismaService.user.findFirst({ where: { id: userData.user.id, deleted: false } });
 
     return { accessToken, refreshToken, user: userFullInfo };
   }
 
-  public async signOut(refreshToken: string) {
+  public async changeInfo({
+    userId,
+    name,
+    newPassword,
+    oldPassword,
+  }: ChangeInfoUserDto & { userId: UserId }): Promise<void> {
+    const dataForUpdate: Partial<User> = { name };
+
+    if (oldPassword && newPassword) {
+      const candidateUser = await this.prismaService.user.findFirst({ where: { id: userId, deleted: false } });
+
+      const isPasswordMatches = candidateUser && (await this.comparePassword(oldPassword, candidateUser.password));
+
+      if (!isPasswordMatches) {
+        throw new BadRequestException('Неверный пароль');
+      }
+      const newPasswordHash = await this.hashPassword(newPassword);
+      dataForUpdate.password = newPasswordHash;
+    }
+
+    await this.prismaService.user.update({ where: { id: userId }, data: dataForUpdate });
+  }
+
+  public async signOut(refreshToken: string): Promise<void> {
     await this.prismaService.token.delete({ where: { refresh_token: refreshToken } });
-    return true;
   }
 
   public async verifyJwt(jwtToken: string) {
@@ -136,5 +161,13 @@ export class AuthService {
 
     await this.prismaService.token.create({ data: { user_id: user.id, refresh_token: refreshToken } });
     return { accessToken, refreshToken };
+  }
+
+  public hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, process.env.PASSWORD_SALT);
+  }
+
+  private comparePassword(candidatePassword: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(candidatePassword, hash);
   }
 }

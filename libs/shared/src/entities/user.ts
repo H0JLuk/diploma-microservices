@@ -19,6 +19,8 @@ export class User {
 
   @ApiProperty()
   deleted?: boolean;
+
+  password?: string;
 }
 
 export type JwtUser = {

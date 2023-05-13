@@ -8,8 +8,20 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SubjectService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public getSubjects(): Promise<Subject[]> {
-    return this.prismaService.testSubject.findMany();
+  public async getSubjects(): Promise<Subject[]> {
+    const tests = await this.prismaService.testSubject.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: true,
+      },
+    });
+
+    return tests.map(({ id, name, _count }) => ({ id, name, testsLength: _count.tests }));
+  }
+
+  public getSubject(subjectId: number): Promise<Subject> {
+    return this.prismaService.testSubject.findUniqueOrThrow({ where: { id: subjectId } });
   }
 
   public createSubject(dto: CreateSubjectDto): Promise<Subject> {

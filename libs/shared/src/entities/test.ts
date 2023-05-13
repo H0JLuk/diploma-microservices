@@ -17,7 +17,7 @@ export class Test {
   endTime: Date;
 
   @ApiProperty({ required: false, description: 'Test is available for so many minutes' })
-  duration: number;
+  duration?: number;
 
   @ApiProperty()
   isRandomAnswers: boolean;

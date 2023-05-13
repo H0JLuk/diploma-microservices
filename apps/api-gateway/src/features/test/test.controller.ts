@@ -25,10 +25,16 @@ export class TestController {
 
   @ApiBearerAuth()
   @ApiOkResponse({ type: Test, isArray: true })
-  @Authorized()
   @Get()
   getAllTests(): Observable<Test[]> {
     return this.testClient.send('get-all-tests', '');
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: Test, isArray: true })
+  @Get('subject/:subjectId')
+  getAllTestsBySubject(@Param('subjectId', ParseIntPipe) subjectId: number): Observable<Test> {
+    return this.testClient.send('get-tests-by-subject', { subjectId });
   }
 
   @ApiBearerAuth()
@@ -38,14 +44,6 @@ export class TestController {
   @Get(':id')
   getTest(@Param('id', ParseIntPipe) testId: number): Observable<Test> {
     return this.testClient.send('get-test', { testId });
-  }
-
-  @ApiBearerAuth()
-  @ApiOkResponse({ type: Test })
-  @Authorized()
-  @Get('subject/:subjectId')
-  getAllTestsBySubject(@Param('subjectId', ParseIntPipe) subjectId: number): Observable<Test> {
-    return this.testClient.send('get-tests-by-subject', { subjectId });
   }
 
   @ApiBearerAuth()

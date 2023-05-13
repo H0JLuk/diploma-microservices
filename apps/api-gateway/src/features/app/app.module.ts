@@ -11,6 +11,7 @@ import { QuestionController } from '../question/question.controller';
 import { SubjectController } from '../subject/subject.controller';
 import { TestController } from '../test/test.controller';
 import { TestHistoryController } from '../test-history/test-history.controller';
+import { UserController } from '../user/user.controller';
 import { AppController } from './app.controller';
 
 @Module({
@@ -52,6 +53,7 @@ import { AppController } from './app.controller';
     AnswerController,
     TestHistoryController,
     SubjectController,
+    UserController,
   ],
   providers: [
     CookieService,

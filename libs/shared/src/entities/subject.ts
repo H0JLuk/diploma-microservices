@@ -11,4 +11,7 @@ export class Subject {
 
   @ApiProperty({ required: false })
   tests?: Test[];
+
+  @ApiProperty({ required: false })
+  testsLength?: number;
 }
