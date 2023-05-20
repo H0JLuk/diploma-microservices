@@ -41,6 +41,8 @@
     ],
     "no-console": ["warn"],
     "complexity": ["error", 5],
-    "spaced-comment": [2, "always"]
+    "spaced-comment": [2, "always"],
+    "unicorn/no-array-reduce": "off",
+    "unicorn/no-null": "off"
   }
 }

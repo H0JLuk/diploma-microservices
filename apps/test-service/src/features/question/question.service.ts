@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateQuestionDto, UpdateQuestionDto } from 'libs/shared/src/dto';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -8,6 +8,10 @@ export class QuestionService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public createQuestion(dto: CreateQuestionDto) {
+    if (!dto.testId) {
+      throw new BadRequestException('testId должен быть передан');
+    }
+
     return this.prismaService.question.create({
       data: {
         text: dto.text,

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Answer } from './answer';
 
 import { QuestionCategory } from './question-category';
+import { TestHistoryAnswer } from './test-history-answer';
 
 export class Question {
   @ApiProperty()
@@ -24,6 +25,9 @@ export class Question {
 
   @ApiProperty()
   answers?: Answer[];
+
+  @ApiProperty({ required: false })
+  testHistoryAnswer?: TestHistoryAnswer[];
 }
 
 export enum QuestionTypeEnum {

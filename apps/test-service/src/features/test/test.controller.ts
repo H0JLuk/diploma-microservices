@@ -26,12 +26,7 @@ export class TestController {
 
   @MessagePattern('create-test')
   createTest(@Payload('test') createTestDto: CreateTestDto, @Payload('userId') userId: number) {
-    try {
-      return this.testService.createTest(createTestDto, userId);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return this.testService.createTest(createTestDto, userId);
   }
 
   @MessagePattern('update-test')

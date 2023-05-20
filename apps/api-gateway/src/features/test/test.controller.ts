@@ -23,14 +23,12 @@ export class TestController {
     await this.testClient.connect();
   }
 
-  @ApiBearerAuth()
   @ApiOkResponse({ type: Test, isArray: true })
   @Get()
   getAllTests(): Observable<Test[]> {
     return this.testClient.send('get-all-tests', '');
   }
 
-  @ApiBearerAuth()
   @ApiOkResponse({ type: Test, isArray: true })
   @Get('subject/:subjectId')
   getAllTestsBySubject(@Param('subjectId', ParseIntPipe) subjectId: number): Observable<Test> {
@@ -68,7 +66,7 @@ export class TestController {
   @Authorized()
   @Roles('Methodist', 'Admin')
   @Delete(':id')
-  deleteTest(@Param('id') testId: string): Observable<Test> {
+  deleteTest(@Param('id', ParseIntPipe) testId: number): Observable<Test> {
     return this.testClient.send('delete-test', { testId });
   }
 }

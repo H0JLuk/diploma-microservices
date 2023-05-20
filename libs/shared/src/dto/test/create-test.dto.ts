@@ -6,11 +6,16 @@ import {
   IsOptional,
   IsNumber,
   IsBoolean,
-  IsNotEmptyObject,
   IsArray,
+  ArrayNotEmpty,
+  ArrayMinSize,
+  ArrayMaxSize,
+  ValidateNested,
+  IsPositive,
 } from 'class-validator';
 
 import { CreateQuestionDto } from '../question';
+import { Type } from 'class-transformer';
 
 export class CreateTestDto {
   @ApiProperty()
@@ -36,7 +41,12 @@ export class CreateTestDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
-  isRandomAnswer?: boolean;
+  isRandomAnswers?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  hidden?: boolean;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -44,7 +54,29 @@ export class CreateTestDto {
   subjectId: number;
 
   @ApiProperty({ isArray: true, type: CreateQuestionDto, required: true })
-  @IsNotEmptyObject()
   @IsArray()
+  @ValidateNested({ each: true })
+  @ArrayNotEmpty()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(100)
+  @Type(() => CreateQuestionDto)
   questions: CreateQuestionDto[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  scoreFor3: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  scoreFor4: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  scoreFor5: number;
 }

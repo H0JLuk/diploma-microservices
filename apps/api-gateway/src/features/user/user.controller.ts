@@ -14,6 +14,7 @@ export class UserController {
 
   async onModuleInit(): Promise<void> {
     this.authClient.subscribeToResponseOf('get-all-users');
+    this.authClient.subscribeToResponseOf('get-user');
     this.authClient.subscribeToResponseOf('get-students');
     this.authClient.subscribeToResponseOf('create-user');
     this.authClient.subscribeToResponseOf('change-user-role-by-admin');
@@ -37,6 +38,14 @@ export class UserController {
   @Get('students')
   getStudents(): Observable<User[]> {
     return this.authClient.send('get-students', '');
+  }
+
+  @ApiBearerAuth()
+  @Authorized()
+  @Roles('Admin', 'Methodist')
+  @Get(':id')
+  getUser(@Param('id', ParseIntPipe) userId: UserId): Observable<User> {
+    return this.authClient.send('get-user', { userId });
   }
 
   @ApiBearerAuth()

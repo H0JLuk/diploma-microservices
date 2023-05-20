@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TestHistoryId, UserId } from '../types';
+import { AnswersToTestDto } from '../dto';
 
 export class StartTestHistoryPayload {
   userId: UserId;
@@ -8,9 +9,13 @@ export class StartTestHistoryPayload {
 
 export class FinishTestHistoryPayload {
   userId: UserId;
-  @ApiProperty() testHistoryId: TestHistoryId;
+
+  testHistoryId: TestHistoryId;
+
+  answers: AnswersToTestDto;
 }
 
 export class GetTestHistoryResultPayload {
-  @ApiProperty() testHistoryId: TestHistoryId;
+  testHistoryId: TestHistoryId;
+  userId?: UserId;
 }

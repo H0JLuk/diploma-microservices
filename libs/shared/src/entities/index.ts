@@ -5,3 +5,4 @@ export * from './test';
 export * from './question';
 export * from './subject';
 export * from './test-history';
+export * from './test-history-answer';

@@ -13,11 +13,14 @@ export class SubjectService {
       select: {
         id: true,
         name: true,
-        _count: true,
+        tests: {
+          where: { hidden: false, startTime: { gte: new Date() }, endTime: { lte: new Date() } },
+          select: { id: true },
+        },
       },
     });
 
-    return tests.map(({ id, name, _count }) => ({ id, name, testsLength: _count.tests }));
+    return tests.map(({ id, name, tests }) => ({ id, name, testsLength: tests.length }));
   }
 
   public getSubject(subjectId: number): Promise<Subject> {

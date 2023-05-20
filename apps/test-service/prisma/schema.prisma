@@ -19,7 +19,11 @@ model test {
   subjectId       Int           @map("subject_id")
   subject         testSubject   @relation(fields: [subjectId], references: [id], onDelete: Restrict)
   questions       question[]
-  testHistory     testHistory[]
+  testHistories   testHistory[]
+
+  scoreFor3 Int @map("score_for_3")
+  scoreFor4 Int @map("score_for_4")
+  scoreFor5 Int @map("score_for_5")
 
   @@unique([name, subjectId])
 }
@@ -41,15 +45,16 @@ model questionCategory {
 }
 
 model question {
-  id         Int                @id() @default(autoincrement())
-  text       String             @db.Text
-  image      String?            @db.Text
-  type       QuestionType
-  category   questionCategory   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  answers    answerToQuestion[]
-  test       test               @relation(fields: [testId], references: [id], onDelete: Cascade)
-  testId     Int                @map("test_id")
-  categoryId Int                @map("category_id")
+  id                Int                 @id() @default(autoincrement())
+  text              String              @db.Text
+  image             String?             @db.Text
+  type              QuestionType
+  category          questionCategory?   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  answers           answerToQuestion[]
+  test              test                @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId            Int                 @map("test_id")
+  categoryId        Int?                @map("category_id")
+  testHistoryAnswer testHistoryAnswer[]
 
   @@unique([text, image, testId])
 }
@@ -79,12 +84,16 @@ model testHistory {
 }
 
 model testHistoryAnswer {
-  testHistoryId    Int
-  questionAnswerId Int
-  history          testHistory       @relation(fields: [testHistoryId], references: [id], onDelete: Cascade)
-  answer           answerToQuestion? @relation(fields: [questionAnswerId], references: [id], onDelete: Restrict)
+  id            Int     @id() @default(autoincrement())
+  textAnswer    String?
+  testHistoryId Int
+  questionId    Int
+  answerId      Int?
 
-  @@unique([testHistoryId, questionAnswerId])
+  history  testHistory       @relation(fields: [testHistoryId], references: [id], onDelete: Cascade)
+  answer   answerToQuestion? @relation(fields: [answerId], references: [id], onDelete: Restrict)
+  question question          @relation(fields: [questionId], references: [id])
+
   @@map("test_history_answer")
 }
 

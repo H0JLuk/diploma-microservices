@@ -36,4 +36,13 @@ export class Test {
 
   @ApiProperty()
   questions?: Question[];
+
+  @ApiProperty({ required: false })
+  scoreFor3?: number;
+
+  @ApiProperty({ required: false })
+  scoreFor4?: number;
+
+  @ApiProperty({ required: false })
+  scoreFor5?: number;
 }

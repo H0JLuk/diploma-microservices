@@ -15,6 +15,11 @@ export class UserController {
     return this.authService.getAllUsers();
   }
 
+  @MessagePattern('get-user')
+  getUser(@Payload('userId') userId: UserId): Promise<User> {
+    return this.authService.getUser(userId);
+  }
+
   @MessagePattern('get-students')
   getStudents(): Promise<User[]> {
     return this.authService.getStudents();

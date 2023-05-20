@@ -25,6 +25,13 @@ export class UserService {
     });
   }
 
+  public getUser(userId: UserId) {
+    return this.prismaService.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: userSelectFromDB,
+    });
+  }
+
   public getStudents() {
     return this.prismaService.user.findMany({
       where: { deleted: false, role: 'Student' },
@@ -36,7 +43,7 @@ export class UserService {
   public async createUser(userDto: CreateUserDto): Promise<void> {
     const candidateUser = await this.prismaService.user.findUnique({ where: { login: userDto.login } });
     if (candidateUser) {
-      throw new BadRequestException('User with this login is already exist');
+      throw new BadRequestException('Пользователь с таким логином уже зарегистрирован');
     }
 
     userDto.password = await this.authService.hashPassword(userDto.password);
@@ -44,9 +51,9 @@ export class UserService {
   }
 
   public async changeUserRoleByAdmin({ role, userId }: ChangeUserRoleDto & { userId: UserId }): Promise<void> {
-    if (role === 'Admin') throw new BadRequestException('Cannot give admin role');
+    if (role === 'Admin') throw new BadRequestException('Нельзя дать права админа');
     const candidateUser = await this.prismaService.user.findFirst({ where: { id: userId, deleted: false } });
-    if (!candidateUser) throw new NotFoundException('User is not found');
+    if (!candidateUser) throw new NotFoundException('Пользователь не найден');
 
     await this.prismaService.user.update({ where: { id: userId }, data: { role } });
   }
@@ -58,9 +65,8 @@ export class UserService {
   public async banStudent(studentId: UserId): Promise<void> {
     const studentCandidate = await this.prismaService.user.findFirst({ where: { id: studentId, deleted: false } });
     if (!studentCandidate) {
-      throw new BadRequestException('Student is not found');
+      throw new BadRequestException('Студент не найден');
     }
-    console.log('studentId :>>', studentId, studentCandidate);
     await this.prismaService.user.update({ data: { deleted: true }, where: { id: studentId } });
   }
 }

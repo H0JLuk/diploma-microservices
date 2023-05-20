@@ -15,7 +15,11 @@ export class ErrorsInterceptor implements NestInterceptor {
         }
 
         return throwError(
-          () => new HttpException(err?.message || 'Server error', +err?.statusCode || HttpStatus.INTERNAL_SERVER_ERROR),
+          () =>
+            new HttpException(
+              err?.message || 'Ошибка сервера...',
+              +err?.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
+            ),
         );
       }),
     );

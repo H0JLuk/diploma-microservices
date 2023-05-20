@@ -1,5 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsDateString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsDateString,
+  IsOptional,
+  IsNumber,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+  ArrayMinSize,
+  ArrayMaxSize,
+  IsPositive,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateQuestionDto, UpdateQuestionDto } from '../question';
 
 export class UpdateTestDto {
   @ApiProperty()
@@ -25,5 +38,50 @@ export class UpdateTestDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
-  isRandomAnswer?: boolean;
+  hidden?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  isRandomAnswers?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  subjectId?: number;
+
+  @ApiProperty({ isArray: true, type: [CreateQuestionDto, UpdateQuestionDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
+  @ArrayMaxSize(15)
+  @Type(() => UpdateQuestionDto, {
+    discriminator: {
+      property: 'type',
+      subTypes: [
+        { value: CreateQuestionDto, name: 'CreateQuestionDto' },
+        { value: UpdateQuestionDto, name: 'UpdateQuestionDto' },
+      ],
+    },
+  })
+  questions: Array<CreateQuestionDto | UpdateQuestionDto>;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  scoreFor3?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  scoreFor4?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  scoreFor5?: number;
 }
